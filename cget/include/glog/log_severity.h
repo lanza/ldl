@@ -1,1 +1,0 @@
-/Users/lanza/Documents/linker/linker/cget/cget/pkg/google__glog/install/include/glog/log_severity.h
