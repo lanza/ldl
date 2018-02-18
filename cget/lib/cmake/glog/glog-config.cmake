@@ -1,0 +1,1 @@
+/Users/lanza/Documents/linker/linker/cget/cget/pkg/google__glog/install/lib/cmake/glog/glog-config.cmake
