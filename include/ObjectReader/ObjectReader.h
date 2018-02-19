@@ -1,3 +1,5 @@
+#ifndef ObjectReader_h
+#define ObjectReader_h
 
 #include <fstream>
 #include <sstream>
@@ -36,12 +38,29 @@ public:
 
 class Segment {
 public:
+  std::string FileName;
   std::string Name;
   int Address;
   int Length;
   std::string Code;
 
   std::string Data;
+
+  Segment(std::string FileName, std::string Name, int Address, int Length, std::string Code)
+    :FileName{FileName},
+    Name{Name},
+    Address{Address},
+    Length{Length},
+    Code{Code} { }
+  Segment() {}
+};
+
+class OutSegment : public Segment {
+public:
+  std::vector<Segment> InputSegments;
+  std::vector<Segment> ContainedSegments;
+  OutSegment(std::string FileName, std::string Name, int Address, int Length, std::string Code)
+    :Segment{FileName, Name, Address, Length, Code} { }
 };
 
 class ObjectFile {
@@ -143,6 +162,7 @@ public:
 
   bool ReadSegmentHeader() {
     Segment S;
+    S.FileName = FileName;
     IFS >> S.Name;
     IFS >> std::hex >> S.Address;
     IFS >> std::hex >> S.Length;
@@ -223,3 +243,5 @@ public:
   }
 };
 }
+
+#endif

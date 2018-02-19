@@ -1,1 +1,7 @@
+macro(add_gtest name)
+  add_executable(${name} ${name}.cpp)
+  target_link_libraries(${name} gtest_main gtest gmock)
+  add_test(NAME ${name} COMMAND ${name})
+endmacro(add_gtest name)
 add_subdirectory(ObjectReaderTests)
+add_subdirectory(LinkerTests)

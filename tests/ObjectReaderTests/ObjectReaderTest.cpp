@@ -10,16 +10,18 @@
 
 #include <ObjectReader/ObjectReader.h>
 
+std::string TestName = "/Users/lanza/Projects/ldl/scrap/sample.pof";
+
 using namespace testing;
 
 TEST(ObjectFile, IsCreatable) {
-  std::unique_ptr<ldl::ObjectFile> OF{new ldl::ObjectFile{"/Users/lanza/Documents/linker/linker/scrap/sample.pof"}};
+  std::unique_ptr<ldl::ObjectFile> OF{new ldl::ObjectFile{TestName}};
 
   ASSERT_THAT(OF, NotNull());
 }
 
 TEST(ObjectReader, ReadsFileHeader) {
-  ldl::ObjectReader OR{"/Users/lanza/Documents/linker/linker/scrap/sample.pof"};
+  ldl::ObjectReader OR{TestName};
   EXPECT_THAT(OR.ReadFileHeader(), Eq(true));
 
   ldl::FileHeader FH = OR.FH;
@@ -31,7 +33,7 @@ TEST(ObjectReader, ReadsFileHeader) {
 }
 
 TEST(ObjectReader, ReadsASegmentHeader) {
-  ldl::ObjectReader OR{"/Users/lanza/Documents/linker/linker/scrap/sample.pof"};
+  ldl::ObjectReader OR{TestName};
   OR.ReadFileHeader();
   EXPECT_THAT(OR.ReadSegmentHeader(), Eq(true));
 
@@ -46,7 +48,7 @@ TEST(ObjectReader, ReadsASegmentHeader) {
 }
 
 TEST(ObjectReader, ReadsAllSegmentHeaders) {
-  ldl::ObjectReader OR{"/Users/lanza/Documents/linker/linker/scrap/sample.pof"};
+  ldl::ObjectReader OR{TestName};
   OR.ReadFileHeader();
   EXPECT_THAT(OR.ReadSegmentHeaders(), Eq(true));
 
@@ -54,7 +56,7 @@ TEST(ObjectReader, ReadsAllSegmentHeaders) {
 }
 
 TEST(ObjectReader, ReadsASymbolTableEntry) {
-  ldl::ObjectReader OR{"/Users/lanza/Documents/linker/linker/scrap/sample.pof"};
+  ldl::ObjectReader OR{TestName};
   OR.ReadFileHeader();
   OR.ReadSegmentHeaders();
   EXPECT_THAT(OR.ReadSymbolTableEntry(), Eq(true));
@@ -69,7 +71,7 @@ TEST(ObjectReader, ReadsASymbolTableEntry) {
 }
 
 TEST(ObjectReader, ReadsSymbolTable) {
-  ldl::ObjectReader OR{"/Users/lanza/Documents/linker/linker/scrap/sample.pof"};
+  ldl::ObjectReader OR{TestName};
   OR.ReadFileHeader();
   OR.ReadSegmentHeaders();
   EXPECT_THAT(OR.ReadSymbolTable(), Eq(true));
@@ -78,7 +80,7 @@ TEST(ObjectReader, ReadsSymbolTable) {
 }
 
 TEST(ObjectReader, ReadsARelocationEntry) {
-  ldl::ObjectReader OR{"/Users/lanza/Documents/linker/linker/scrap/sample.pof"};
+  ldl::ObjectReader OR{TestName};
   OR.ReadFileHeader();
   OR.ReadSegmentHeaders();
   OR.ReadSymbolTable();
@@ -94,7 +96,7 @@ TEST(ObjectReader, ReadsARelocationEntry) {
 }
 
 TEST(ObjectReader, ReadsRelocations) {
-  ldl::ObjectReader OR{"/Users/lanza/Documents/linker/linker/scrap/sample.pof"};
+  ldl::ObjectReader OR{TestName};
   OR.ReadFileHeader();
   OR.ReadSegmentHeaders();
   OR.ReadSymbolTable();
@@ -104,7 +106,7 @@ TEST(ObjectReader, ReadsRelocations) {
 }
 
 TEST(ObjectReader, ReadsDataForSegmentOne) {
-  ldl::ObjectReader OR{"/Users/lanza/Documents/linker/linker/scrap/sample.pof"};
+  ldl::ObjectReader OR{TestName};
   OR.ReadFileHeader();
   OR.ReadSegmentHeaders();
   OR.ReadSymbolTable();
@@ -116,7 +118,7 @@ TEST(ObjectReader, ReadsDataForSegmentOne) {
 }
 
 TEST(ObjectReader, ReadsSegmentData) {
-  ldl::ObjectReader OR{"/Users/lanza/Documents/linker/linker/scrap/sample.pof"};
+  ldl::ObjectReader OR{TestName};
   OR.ReadFileHeader();
   OR.ReadSegmentHeaders();
   OR.ReadSymbolTable();
@@ -128,25 +130,25 @@ TEST(ObjectReader, ReadsSegmentData) {
 }
 
 TEST(ObjectReader, ReadFilePasses) {
-  ldl::ObjectReader OR{"/Users/lanza/Documents/linker/linker/scrap/sample.pof"};
+  ldl::ObjectReader OR{TestName};
   EXPECT_THAT(OR.ReadFile(), Eq(true));
 }
 using ObjectFilePtr = std::unique_ptr<ldl::ObjectFile>;
 TEST(ObjectReader, CreatesObjectFile) {
-  ldl::ObjectReader OR{"/Users/lanza/Documents/linker/linker/scrap/sample.pof"};
+  ldl::ObjectReader OR{TestName};
   ObjectFilePtr OFPtr = OR.GetObjectFile();
 
   EXPECT_THAT(OFPtr->FH.Magic, Eq("LINK"));
-  EXPECT_THAT(OFPtr->Segments.size(), Eq(4));
+  EXPECT_THAT(OFPtr->Segments.size(), Eq(3));
 }
 
 TEST(ObjectFile, GeneratesEquivalentFile) {
-  std::ifstream IFS{"/Users/lanza/Documents/linker/linker/scrap/sample.pof"};
+  std::ifstream IFS{TestName};
   std::string FileStringRepresentation(
     (std::istreambuf_iterator<char>(IFS)),
     (std::istreambuf_iterator<char>()));
 
-  ldl::ObjectReader OR{"/Users/lanza/Documents/linker/linker/scrap/sample.pof"};
+  ldl::ObjectReader OR{TestName};
   ObjectFilePtr OFPtr = OR.GetObjectFile();
   std::string ObjectFileStringRepresentation = OFPtr->GenerateTextRepresentation();
 
