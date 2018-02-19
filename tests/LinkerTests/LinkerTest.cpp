@@ -334,14 +334,58 @@ TEST_F(LinkerMatchesBookTest, GeneratesCorrectObjectFile) {
     EXPECT_THAT(NewYorkBSS.End, Eq(0x86eb));
 }
 
+class GeneralSegmentsTest : public Test {
+public:
+  ldl::Linker L;
+  ObjectFilePtr OFPtr;
+  std::vector<ldl::Segment> Segments;
+protected:
+  virtual void SetUp() {
+    L.FileNames = {
+      "/Users/lanza/Projects/ldl/scrap/linkertest43.pof",
+      "/Users/lanza/Projects/ldl/scrap/linkertest43.pof"
+    };
 
+    L.ReadFiles();
+    OFPtr = L.GenerateObjectFile();
+    Segments = OFPtr->Segments;
+  }
 
+  virtual void TearDown() {
+  }
+};
 
+TEST_F(GeneralSegmentsTest, HasTheSegmentsOrderedCorrectly) {
+  EXPECT_THAT(OFPtr->FH.NumberOfSegments, Eq(6));
+  EXPECT_THAT(Segments.size(), Eq(6));
+  EXPECT_THAT(Segments[0].Name, Eq(".text"));
+  EXPECT_THAT(Segments[1].Name, Eq(".muffin"));
+  EXPECT_THAT(Segments[2].Name, Eq(".data"));
+  EXPECT_THAT(Segments[3].Name, Eq(".riley"));
+  EXPECT_THAT(Segments[4].Name, Eq(".bss"));
+  EXPECT_THAT(Segments[5].Name, Eq(".belle"));
+}
 
+TEST_F(GeneralSegmentsTest, PositionsRPSegmentsCorrectly) {
+  EXPECT_THAT(Segments[0].Address, Eq(0x1000));
+  EXPECT_THAT(Segments[0].Length, Eq(0x3b + 0x1 + 0x3b + 0x1));
+  EXPECT_THAT(Segments[1].Address, Eq(0x1000 + 0x3b + 0x1 + 0x3b + 0x1));
+  EXPECT_THAT(Segments[1].Length, Eq(0x44 + 0x44));
+}
 
+TEST_F(GeneralSegmentsTest, PositionsRWPSegmentsCorrectly) {
+  EXPECT_THAT(Segments[2].Address, Eq(0x2000));
+  EXPECT_THAT(Segments[2].Length, Eq(0x29 + 0x3 + 0x29 + 0x3));
+  EXPECT_THAT(Segments[3].Address, Eq(0x2000 + 0x29 + 0x3 + 0x29 + 0x3));
+  EXPECT_THAT(Segments[3].Length, Eq(0x22 + 0x2 + 0x22 + 0x2));
+}
 
-
-
+TEST_F(GeneralSegmentsTest, PositionsRWSegmentsCorrectly) {
+  EXPECT_THAT(Segments[4].Address, Eq(0x2000 + 0x29 + 0x3 + 0x29 + 0x3 + 0x22 + 0x2 + 0x22 + 0x2));
+  EXPECT_THAT(Segments[4].Length, Eq(0x34 + 0x34 + 0x8));
+  EXPECT_THAT(Segments[5].Address, Eq(0x2000 + 0x29 + 0x3 + 0x29 + 0x3 + 0x22 + 0x2 + 0x22 + 0x2 + 0x34 + 0x34 + 0x8));
+  EXPECT_THAT(Segments[5].Length, Eq(0x44 + 0x44));
+}
 
 
 
