@@ -115,7 +115,7 @@ public:
     bool ReadFileSuccess = ReadFile();
     if (ReadFileSuccess == false) throw "Read file failed";
 
-    ObjectFilePtr OFPtr = ObjectFilePtr{new ObjectFile{}};
+    ObjectFilePtr OFPtr = std::make_unique<ObjectFile>();
     OFPtr->FH = std::move(FH);
     OFPtr->Segments = std::move(Segments);
     OFPtr->Symbols = std::move(Symbols);

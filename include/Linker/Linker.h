@@ -56,7 +56,7 @@ using ObjectFilePtr = std::unique_ptr<ObjectFile>;
     ObjectFilePtr GenerateObjectFile() {
       GenerateOutputFileSymbolTable();
       GenerateOutputFileSegments();
-      ObjectFilePtr OFPtr = ObjectFilePtr{new ObjectFile{}};
+      ObjectFilePtr OFPtr = std::make_unique<ObjectFile>();
       OFPtr->FH = FileHeader{
         "LINK",
         static_cast<int>(RPSegments.size() + RWPSegments.size() + RWSegments.size()),

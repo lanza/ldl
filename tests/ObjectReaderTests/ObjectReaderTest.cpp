@@ -15,8 +15,7 @@ std::string TestName = "/Users/lanza/Projects/ldl/scrap/sample.pof";
 using namespace testing;
 
 TEST(ObjectFile, IsCreatable) {
-  std::unique_ptr<ldl::ObjectFile> OF{new ldl::ObjectFile{TestName}};
-
+  std::unique_ptr<ldl::ObjectFile> OF = std::make_unique<ldl::ObjectFile>(); 
   ASSERT_THAT(OF, NotNull());
 }
 
